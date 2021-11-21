@@ -1,0 +1,139 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.131.3/build/three.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script>
+      // references
+      //
+      // fullscreen
+      // https://ics.media/tutorial-three/renderer_resize/
+      // deviceorientation on iOS
+      // http://dotnsf.blog.jp/archives/1076737232.html
+      // https://hajimete.org/jquery-gyro-get
+
+      // ページの読み込みを待つ
+      window.addEventListener("load", init);
+
+      function init() {
+        // レンダラーを作成
+        const renderer = new THREE.WebGLRenderer({
+          canvas: document.querySelector("#myCanvas"),
+          antialias: true,
+        });
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, 1.0);
+        camera.position.set(0, 0, +1000);
+
+        // 球体を作成
+        const geometry = new THREE.SphereGeometry(300, 30, 30);
+        // マテリアルを作成
+        const material = new THREE.MeshBasicMaterial({ wireframe: true });
+        // メッシュを作成
+        const mesh = new THREE.Mesh(geometry, material);
+        // 3D空間にメッシュを追加
+        scene.add(mesh);
+
+        tick();
+
+        // 毎フレーム時に実行されるループイベントです
+        function tick() {
+          //mesh.rotation.y += 0.01;
+          //mesh.position.y += 1;
+
+          // レンダリング
+          renderer.render(scene, camera);
+          requestAnimationFrame(tick);
+        }
+
+        // 初期化のために実行
+        onResize();
+        // リサイズイベント発生時に実行
+        window.addEventListener("resize", onResize);
+
+        function onResize() {
+          // サイズを取得
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+
+          // レンダラーのサイズを調整する
+          renderer.setPixelRatio(window.devicePixelRatio);
+          renderer.setSize(width, height);
+
+          // カメラのアスペクト比を正す
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+        }
+
+        // 加速度センサーイベント処理
+        if (window.DeviceOrientationEvent) {
+          //. iOS13 以上であれば DeviceOrientationEvent.requestPermission 関数が定義されているので、ここで条件分岐
+          if (
+            DeviceOrientationEvent.requestPermission &&
+            typeof DeviceOrientationEvent.requestPermission === "function"
+          ) {
+            //. iOS 13 以上の場合、
+            //. 画面上部に「センサーの有効化」ボタンを追加
+            //var banner = '<div  style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0);" onclick="ClickRequestDeviceSensor();" id="sensorrequest"><p style="color: rgb(0, 0, 255);">センサーの有効化</p></div>';
+            //$("body").prepend(banner);
+            $("#sensorrequest").css("display", "block");
+            $("#sensorrequest").on("click", function(){
+              ClickRequestDeviceSensor();
+            });
+          } else {
+            //. Android または iOS 13 未満の場合、
+            //. DeviceOrientationEvent オブジェクトが有効な場合のみ、deviceorientation イベント発生時に deviceOrientaion 関数がハンドリングするよう登録
+            window.addEventListener("deviceorientation", deviceOrientation, false);
+          }
+        }
+        function deviceOrientation(e) {
+          // alpha, beta, gammaの値を取得
+          let alpha = e.alpha;
+          let beta = e.beta;
+          let gamma = e.gamma;
+
+          // イベント発生時の処理を記述
+          console.log([alpha, beta, gamma]);
+          //mesh.rotation.x = alpha;
+          mesh.rotation.y += 0.1;
+          mesh.position.y += 10;
+        }
+
+        function ClickRequestDeviceSensor() {
+          //. ユーザーに「許可」を求めるダイアログを表示
+          DeviceOrientationEvent.requestPermission()
+            .then(function (response) {
+              if (response === "granted") {
+                //. 許可された場合のみイベントハンドラを追加できる
+                window.addEventListener("deviceorientation", deviceOrientation, false);
+                //. 画面上部のボタンを消す
+                $("#sensorrequest").css("display", "none");
+              }
+            })
+            .catch(function (e) {
+              console.log(e);
+            });
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div
+      style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0)"
+      id="sensorrequest"
+    >
+      <p style="color: rgb(0, 0, 255)">センサーの有効化</p>
+    </div>
+    <canvas id="myCanvas"></canvas>
+  </body>
+</html>
