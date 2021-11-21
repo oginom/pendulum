@@ -116,9 +116,9 @@
         }
         function deviceMotion(e) {
           // x, y, zの値を取得
-          let x = e.x;
-          let y = e.y;
-          let z = e.z;
+          let x = e.acceleration.x;
+          let y = e.acceleration.y;
+          let z = e.acceleration.z;
 
           $("#x").text(x);
           $("#y").text(y);
