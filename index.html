@@ -37,7 +37,7 @@
         camera.position.set(0, 0, +1000);
 
         // 球体を作成
-        const geometry = new THREE.SphereGeometry(300, 30, 30);
+        const geometry = new THREE.SphereGeometry(100, 10, 10);
         // マテリアルを作成
         const material = new THREE.MeshBasicMaterial({ wireframe: true });
         // メッシュを作成
@@ -125,7 +125,9 @@
           $("#z").text(z);
 
           // イベント発生時の処理を記述
-          mesh.rotation.x = x;
+          mesh.position.x = x * 100;
+          mesh.position.y = x * 100;
+          mesh.position.z = z * 100;
         }
       }
     </script>
