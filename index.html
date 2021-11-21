@@ -46,12 +46,24 @@
         // 3D空間にメッシュを追加
         scene.add(mesh);
 
+
+
+        var x = 0;
+        var vx = 0;
+        var cx = 0;
+
+
+
         tick();
 
         // 毎フレーム時に実行されるループイベントです
         function tick() {
           //mesh.rotation.y += 0.01;
           //mesh.position.y += 1;
+
+          vx += (x - cx) * -0.1;
+          x += vx * 0.01;
+          mesh.position.x = x;
 
           // レンダリング
           renderer.render(scene, camera);
@@ -97,10 +109,7 @@
 
         if (window.DeviceMotionEvent) {
           //. iOS13 以上であれば DeviceMotionEvent.requestPermission 関数が定義されているので、ここで条件分岐
-          if (
-            DeviceMotionEvent.requestPermission &&
-            typeof DeviceMotionEvent.requestPermission === "function"
-          ) {
+          if (DeviceMotionEvent.requestPermission && typeof DeviceMotionEvent.requestPermission === "function") {
             //. iOS 13 以上の場合、
             //. 画面上部に「センサーの有効化」ボタンを追加
             //var banner = '<div  style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0);" onclick="ClickRequestDeviceSensor();" id="sensorrequest"><p style="color: rgb(0, 0, 255);">センサーの有効化</p></div>';
@@ -120,21 +129,41 @@
           let x = e.acceleration.x;
           let y = e.acceleration.y;
           let z = e.acceleration.z;
+          accelFunc(x, y, z);
+        }
+        document.body.addEventListener("keydown", (e) => {
+          e = e || window.event;
+          if (e.keyCode == "38") {
+            // up arrow
+          } else if (e.keyCode == "40") {
+            // down arrow
+          } else if (e.keyCode == "37") {
+            // left arrow
+            accelFunc(-1, 0, 0);
+          } else if (e.keyCode == "39") {
+            // right arrow
+            accelFunc(1, 0, 0);
+          }
+        });
 
+        function accelFunc(x, y, z) {
           $("#x").text(x);
           $("#y").text(y);
           $("#z").text(z);
 
-          // イベント発生時の処理を記述
-          mesh.position.x = x * 20;
-          mesh.position.y = y * 20;
-          mesh.position.z = z * 20;
+          //mesh.position.x = x * 20;
+          //mesh.position.y = y * 20;
+          //mesh.position.z = z * 20;
+          cx = x * 20;
         }
       }
     </script>
   </head>
   <body>
-    <div style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0); display: none" id="sensorrequest">
+    <div
+      style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0); display: none"
+      id="sensorrequest"
+    >
       <p style="color: rgb(0, 0, 255)">センサーの有効化</p>
     </div>
     <div style="padding-top: 50px; background-color: rgb(0, 0, 0)" id="sensorrequest">
