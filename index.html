@@ -76,6 +76,23 @@
         }
 
         // 加速度センサーイベント処理
+
+        function ClickRequestDeviceSensor() {
+          //. ユーザーに「許可」を求めるダイアログを表示
+          DeviceOrientationEvent.requestPermission()
+            .then(function (response) {
+              if (response === "granted") {
+                //. 許可された場合のみイベントハンドラを追加できる
+                window.addEventListener("deviceorientation", deviceOrientation, false);
+                //. 画面上部のボタンを消す
+                $("#sensorrequest").css("display", "none");
+              }
+            })
+            .catch(function (e) {
+              console.log(e);
+            });
+        }
+
         if (window.DeviceOrientationEvent) {
           //. iOS13 以上であれば DeviceOrientationEvent.requestPermission 関数が定義されているので、ここで条件分岐
           if (
@@ -107,22 +124,6 @@
           //mesh.rotation.x = alpha;
           mesh.rotation.y += 0.1;
           mesh.position.y += 10;
-        }
-
-        function ClickRequestDeviceSensor() {
-          //. ユーザーに「許可」を求めるダイアログを表示
-          DeviceOrientationEvent.requestPermission()
-            .then(function (response) {
-              if (response === "granted") {
-                //. 許可された場合のみイベントハンドラを追加できる
-                window.addEventListener("deviceorientation", deviceOrientation, false);
-                //. 画面上部のボタンを消す
-                $("#sensorrequest").css("display", "none");
-              }
-            })
-            .catch(function (e) {
-              console.log(e);
-            });
         }
       }
     </script>
