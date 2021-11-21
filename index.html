@@ -124,16 +124,13 @@
           $("#z").text(gamma);
 
           // イベント発生時の処理を記述
-          console.log([alpha, beta, gamma]);
-          //mesh.rotation.x = alpha;
-          mesh.rotation.y += 0.1;
-          mesh.position.y += 10;
+          mesh.rotation.x = alpha;
         }
       }
     </script>
   </head>
   <body>
-    <div style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0)" id="sensorrequest">
+    <div style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0); display: none" id="sensorrequest">
       <p style="color: rgb(0, 0, 255)">センサーの有効化</p>
     </div>
     <div style="padding-top: 50px; background-color: rgb(0, 0, 0)" id="sensorrequest">
