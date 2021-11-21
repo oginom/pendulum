@@ -62,6 +62,7 @@
           //mesh.position.y += 1;
 
           vx += (x - cx) * -0.1;
+          vx *= (1 - 0.001);
           x += vx * 0.01;
           mesh.position.x = x;
 
