@@ -115,16 +115,13 @@
           }
         }
         function deviceMotion(e) {
-          // alpha, beta, gammaの値を取得
-          let alpha = e.alpha;
-          let beta = e.beta;
-          let gamma = e.gamma;
-          $("#x").text(alpha);
-          $("#y").text(beta);
-          $("#z").text(gamma);
+          // x, y, zの値を取得
+          $("#x").text(x);
+          $("#y").text(y);
+          $("#z").text(z);
 
           // イベント発生時の処理を記述
-          mesh.rotation.x = alpha;
+          mesh.rotation.x = x;
         }
       }
     </script>
