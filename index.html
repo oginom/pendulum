@@ -39,7 +39,7 @@
         initObj() {
           this.obj = new THREE.Object3D();
 
-          // 球体を作成
+          // init ball
           {
             const geometry = new THREE.SphereGeometry(this.r, 10, 10);
             const material = new THREE.MeshBasicMaterial({ wireframe: true });
@@ -47,7 +47,7 @@
             this.obj.add(this.mesh);
           }
 
-          // 紐を作成
+          // init line
           {
             const points = [
               new THREE.Vector3(),
@@ -85,20 +85,17 @@
         }
       }
 
-      // ページの読み込みを待つ
+      // wait for page load
       window.addEventListener("load", init);
 
       function init() {
-        // レンダラーを作成
         const renderer = new THREE.WebGLRenderer({
           canvas: document.querySelector("#myCanvas"),
           antialias: true,
         });
 
-        // シーンを作成
         const scene = new THREE.Scene();
 
-        // カメラを作成
         const camera = new THREE.PerspectiveCamera(45, 1.0);
         camera.position.set(0, 0, +1000);
 
@@ -110,8 +107,6 @@
           pend.R = R;
 
           pends.push(pend);
-
-          // シーンに振り子を追加
           pend.addToScene(scene);
         });
 
@@ -121,7 +116,7 @@
 
         tick();
 
-        // 毎フレーム時に実行されるループイベントです
+        // loop event
         function tick() {
           const delta = clock.getDelta();
 
@@ -131,40 +126,38 @@
             pend.move(delta, g);
           });
 
-          // レンダリング
+          // rendering
           renderer.render(scene, camera);
           requestAnimationFrame(tick);
         }
 
-        // 初期化のために実行
+        // for initialization
         onResize();
-        // リサイズイベント発生時に実行
+        // exec on resize event
         window.addEventListener("resize", onResize);
 
         function onResize() {
-          // サイズを取得
+          // get window size
           const width = window.innerWidth;
           const height = window.innerHeight;
 
-          // レンダラーのサイズを調整する
+          // resize renderer
           renderer.setPixelRatio(window.devicePixelRatio);
           renderer.setSize(width, height);
 
-          // カメラのアスペクト比を正す
+          // fix camera aspect ratio
           camera.aspect = width / height;
           camera.updateProjectionMatrix();
         }
 
-        // 加速度センサーイベント処理
-
         function ClickRequestDeviceSensor() {
-          //. ユーザーに「許可」を求めるダイアログを表示
+          // show permission dialog
           DeviceMotionEvent.requestPermission()
             .then(function (response) {
               if (response === "granted") {
-                //. 許可された場合のみイベントハンドラを追加できる
+                // add handler if granted
                 window.addEventListener("devicemotion", deviceMotion, false);
-                //. 画面上部のボタンを消す
+                // hide button
                 $("#sensorrequest").css("display", "none");
               }
             })
@@ -174,19 +167,18 @@
         }
 
         if (window.DeviceMotionEvent) {
-          //. iOS13 以上であれば DeviceMotionEvent.requestPermission 関数が定義されているので、ここで条件分岐
+          // if iOS geq 13, DeviceMotionEvent.requestPermission is defined
           if (DeviceMotionEvent.requestPermission && typeof DeviceMotionEvent.requestPermission === "function") {
-            //. iOS 13 以上の場合、
-            //. 画面上部に「センサーの有効化」ボタンを追加
-            //var banner = '<div  style="z-index: 1; position: absolute; width: 100%; background-color: rgb(0, 0, 0);" onclick="ClickRequestDeviceSensor();" id="sensorrequest"><p style="color: rgb(0, 0, 255);">センサーの有効化</p></div>';
-            //$("body").prepend(banner);
+            // iOS geq 13 
+            // show enable button
             $("#sensorrequest").css("display", "flex");
             $("#sensorrequest").on("click", function () {
               ClickRequestDeviceSensor();
             });
           } else {
-            //. Android または iOS 13 未満の場合、
-            //. DeviceMotionEvent オブジェクトが有効な場合のみ、devicemotion イベント発生時に deviceMotion関数がハンドリングするよう登録
+            // Android or iOS lt 13
+            // register deviceMotion function to devicemotion event
+            // only if DeviceMotionEvent is enabled
             window.addEventListener("devicemotion", deviceMotion, false);
           }
         }
@@ -230,10 +222,10 @@
   </head>
   <body>
     <div
-      style="z-index: 1; position: absolute; width: 100%; height: 100%; background-color: rgb(0, 0, 0); display: none"
+      style="z-index: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex"
       id="sensorrequest"
     >
-      <div style="margin: auto; color: white">加速度センサーを有効にする</div>
+      <div style="margin: auto; color: white">> Enable accelerometer <</div>
     </div>
     <div style="display: none; background-color: rgb(0, 0, 0)" id="sensorrequest">
       <div id="x" style="color: blue">x</div>
