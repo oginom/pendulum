@@ -209,12 +209,12 @@
           $("#y").text(y);
           $("#z").text(z);
 
-          if (window.orientation == 0) {
-            cx = x * 20;
-          } else if (window.orientation == 90) {
+          if (window.orientation == 90) {
             cx = -y * 20;
           } else if (window.orientation == -90) {
             cx = y * 20;
+          } else {
+            cx = x * 20;
           }
         }
       }
