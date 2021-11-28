@@ -203,6 +203,9 @@
             accelFunc(1, 0, 0);
           }
         });
+        document.body.addEventListener("keyup", () => {
+          accelFunc(0, 0, 0);
+        });
 
         function accelFunc(x, y, z) {
           $("#x").text(x);
