@@ -125,7 +125,7 @@
         function tick() {
           const delta = clock.getDelta();
 
-          const g = clamp(cx * 0.01, -0.02, 0.02);
+          const g = clamp(cx * 0.001, -0.04, 0.04);
 
           pends.forEach(pend => {
             pend.move(delta, g);
