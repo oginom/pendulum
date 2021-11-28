@@ -105,6 +105,7 @@
         Rs.forEach(R => {
           const pend = new Pendulum(center);
           pend.R = R;
+          pend.theta = 0.2;
 
           pends.push(pend);
           pend.addToScene(scene);
