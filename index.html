@@ -120,6 +120,7 @@
         function tick() {
           const delta = clock.getDelta();
 
+          // limit abs(accel)
           const g = clamp(cx * 0.001, -0.04, 0.04);
 
           pends.forEach(pend => {
@@ -222,7 +223,7 @@
   </head>
   <body>
     <div
-      style="z-index: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex"
+      style="z-index: 1; position: absolute; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none"
       id="sensorrequest"
     >
       <div style="margin: auto; color: white">> Enable accelerometer <</div>
