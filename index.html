@@ -225,13 +225,13 @@
 
           if (window.orientation == 90) {
             //cx = -y * 20;
-            cx = -Math.atan2(x, y);
+            cx = Math.atan2(-y, -x);
           } else if (window.orientation == -90) {
             //cx = y * 20;
-            cx = Math.atan2(x, y);
+            cx = Math.atan2(y, x);
           } else {
             //cx = x * 20;
-            cx = Math.atan2(x, y);
+            cx = Math.atan2(x, -y);
           }
         }
       }
