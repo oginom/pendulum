@@ -67,8 +67,17 @@
           scene.add(this.obj);
         }
 
-        move(delta, g) {
-          this.v_theta += (this.theta - g) * -100 / this.R;
+        move(delta, g_theta) {
+          if (this.theta > Math.PI / 2) {
+            this.theta = Math.PI / 2;
+            this.v_theta = 0;
+          }
+          if (this.theta < -Math.PI / 2) {
+            this.theta = -Math.PI / 2;
+            this.v_theta = 0;
+          }
+
+          this.v_theta += Math.sin(this.theta - g_theta) * -100 / this.R;
           this.v_theta *= (1 - delta * 0.1);
           this.theta += this.v_theta * delta;
 
@@ -122,10 +131,11 @@
           const delta = clock.getDelta();
 
           // limit abs(accel)
-          const g = clamp(cx * 0.001, -0.04, 0.04);
+          //const g = clamp(cx * 0.001, -0.04, 0.04);
+          const g_theta = cx;
 
           pends.forEach(pend => {
-            pend.move(delta, g);
+            pend.move(delta, g_theta);
           });
 
           // rendering
@@ -185,9 +195,9 @@
           }
         }
         function deviceMotion(e) {
-          let x = e.acceleration.x;
-          let y = e.acceleration.y;
-          let z = e.acceleration.z;
+          let x = e.accelerationIncludingGravity.x;
+          let y = e.accelerationIncludingGravity.y;
+          let z = e.accelerationIncludingGravity.z;
           accelFunc(x, y, z);
         }
         document.body.addEventListener("keydown", (e) => {
@@ -198,14 +208,14 @@
             // down arrow
           } else if (e.keyCode == "37") {
             // left arrow
-            accelFunc(-1, 0, 0);
+            accelFunc(-1, 1, 0);
           } else if (e.keyCode == "39") {
             // right arrow
-            accelFunc(1, 0, 0);
+            accelFunc(1, 1, 0);
           }
         });
         document.body.addEventListener("keyup", () => {
-          accelFunc(0, 0, 0);
+          accelFunc(0, 1, 0);
         });
 
         function accelFunc(x, y, z) {
@@ -214,11 +224,14 @@
           $("#z").text(z);
 
           if (window.orientation == 90) {
-            cx = -y * 20;
+            //cx = -y * 20;
+            cx = -Math.atan2(x, y);
           } else if (window.orientation == -90) {
-            cx = y * 20;
+            //cx = y * 20;
+            cx = Math.atan2(x, y);
           } else {
-            cx = x * 20;
+            //cx = x * 20;
+            cx = Math.atan2(x, y);
           }
         }
       }
