@@ -21,6 +21,7 @@
       // https://triple-underscore.github.io/deviceorientation-ja.html
 
       const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+      const dot = (x, y) => x[0] * y[0] + x[1] * y[1];
 
       class Pendulum {
         constructor(position) {
@@ -67,7 +68,7 @@
           scene.add(this.obj);
         }
 
-        move(delta, g_theta) {
+        move(delta, g) {
           if (this.theta > Math.PI / 2) {
             this.theta = Math.PI / 2;
             this.v_theta = 0;
@@ -77,7 +78,7 @@
             this.v_theta = 0;
           }
 
-          this.v_theta += Math.sin(this.theta - g_theta) * -100 / this.R;
+          this.v_theta += dot(g, [Math.cos(this.theta), -Math.sin(this.theta)]) * 10.0 / this.R;
           this.v_theta *= (1 - delta * 0.1);
           this.theta += this.v_theta * delta;
 
@@ -120,7 +121,8 @@
           pend.addToScene(scene);
         });
 
-        var cx = 0;
+        var gx = 0;
+        var gy = 9.8;
 
         const clock = new THREE.Clock();
 
@@ -130,12 +132,10 @@
         function tick() {
           const delta = clock.getDelta();
 
-          // limit abs(accel)
-          //const g = clamp(cx * 0.001, -0.04, 0.04);
-          const g_theta = cx;
+          const g = [gx, gy];
 
           pends.forEach(pend => {
-            pend.move(delta, g_theta);
+            pend.move(delta, g);
           });
 
           // rendering
@@ -208,14 +208,14 @@
             // down arrow
           } else if (e.keyCode == "37") {
             // left arrow
-            accelFunc(-1, 1, 0);
+            accelFunc(-1, -9.75, 0);
           } else if (e.keyCode == "39") {
             // right arrow
-            accelFunc(1, 1, 0);
+            accelFunc(1, -9.75, 0);
           }
         });
         document.body.addEventListener("keyup", () => {
-          accelFunc(0, 1, 0);
+          accelFunc(0, -9.8, 0);
         });
 
         function accelFunc(x, y, z) {
@@ -224,14 +224,14 @@
           $("#z").text(z);
 
           if (window.orientation == 90) {
-            //cx = -y * 20;
-            cx = Math.atan2(-y, -x);
+            gx = -y;
+            gy = -x;
           } else if (window.orientation == -90) {
-            //cx = y * 20;
-            cx = Math.atan2(y, x);
+            gx = y;
+            gy = x;
           } else {
-            //cx = x * 20;
-            cx = Math.atan2(x, -y);
+            gx = x;
+            gy = -y;
           }
         }
       }
